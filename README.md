@@ -75,17 +75,9 @@ mise use elixir@1.18 erlang@28
 
 ### Database Management
 - Create and migrate: `mix ecto.setup`
-- Run migrations: `mix ecto.migrate` 
+- Run migrations: `mix ecto.migrate`
 - Rollback migration: `mix ecto.rollback`
 - Reset database: `mix ecto.reset`
 - Stop database: `docker-compose down`
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-* Official website: https://www.phoenixframework.org/
-* Guides: https://hexdocs.pm/phoenix/overview.html
-* Docs: https://hexdocs.pm/phoenix
-* Forum: https://elixirforum.com/c/phoenix-forum
-* Source: https://github.com/phoenixframework/phoenix
