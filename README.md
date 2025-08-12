@@ -1,6 +1,13 @@
 <div align="center">
   <img src="./priv/static/images/logo.svg" alt="SocialCircle Logo" width="80" height="80">
   <h1>SocialCircle</h1>
+  
+  [![Build Status](https://github.com/ripple0328/social_circle/actions/workflows/ci.yml/badge.svg)](https://github.com/ripple0328/social_circle/actions/workflows/ci.yml)
+  [![Coverage Status](https://coveralls.io/repos/github/ripple0328/social_circle/badge.svg?branch=main)](https://coveralls.io/github/ripple0328/social_circle?branch=main)
+  [![Elixir](https://img.shields.io/badge/elixir-1.18-purple.svg)](https://elixir-lang.org)
+  [![Phoenix](https://img.shields.io/badge/phoenix-1.8-orange.svg)](https://phoenixframework.org)
+  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+  
   <p><em>A unified social media management platform that aggregates content from multiple platforms, enables cross-platform posting, and provides deep analytics insights about your digital social life.</em></p>
 </div>
 
