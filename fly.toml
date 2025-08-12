@@ -13,7 +13,7 @@ kill_signal = 'SIGTERM'
   release_command = '/app/bin/migrate'
 
 [env]
-  PHX_HOST = 'social-circle.fly.dev'
+  PHX_HOST = 'social.qingbo.us'
   PORT = '8080'
 
 [http_service]
@@ -37,3 +37,7 @@ kill_signal = 'SIGTERM'
 [[statics]]
   guest_path = '/app/lib/social_circle_web-0.1.0/priv/static'
   url_prefix = '/static/'
+
+# Custom domain configuration
+# After deploying, run: flyctl certs add social.qingbo.us
+# Then configure your DNS to point social.qingbo.us to your Fly.io app
