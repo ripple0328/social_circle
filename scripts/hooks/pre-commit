@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+# Pre-commit hook for SocialCircle Elixir/Phoenix project
+# This hook runs code quality checks before allowing commits
+#
+
+echo "🔍 Running pre-commit checks..."
+
+# Check if we're in the right directory
+if [ ! -f "mix.exs" ]; then
+    echo "❌ Error: mix.exs not found. Are you in the project root?"
+    exit 1
+fi
+
+# Check if Mix is available
+if ! command -v mix >/dev/null 2>&1; then
+    echo "❌ Error: Mix is not installed or not in PATH"
+    exit 1
+fi
+
+# Run the precommit alias which includes:
+# - compile --warning-as-errors
+# - deps.unlock --unused  
+# - format
+# - test
+echo "📋 Running mix precommit (compile, format, test)..."
+if ! mix precommit; then
+    echo ""
+    echo "❌ Pre-commit checks failed!"
+    echo "💡 Fix the issues above and try committing again."
+    echo "💡 You can run 'mix precommit' manually to see detailed output."
+    exit 1
+fi
+
+# Check for any unstaged formatting changes
+echo "🔄 Checking for formatting changes..."
+if ! git diff --exit-code; then
+    echo ""
+    echo "❌ Code was formatted during pre-commit checks!"
+    echo "💡 Please stage the formatting changes and commit again:"
+    echo "   git add ."
+    echo "   git commit"
+    exit 1
+fi
+
+echo "✅ All pre-commit checks passed!"
+exit 0

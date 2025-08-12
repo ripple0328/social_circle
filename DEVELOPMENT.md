@@ -48,6 +48,11 @@ mise use elixir@1.18 erlang@28
    mix ecto.setup
    ```
 
+3. **Setup git hooks** (required for all developers):
+   ```bash
+   ./scripts/setup-hooks.sh
+   ```
+
 ## Running the Application
 
 1. Install dependencies:
@@ -85,15 +90,29 @@ mix coveralls
 mix coveralls.html
 ```
 
-### Code Quality
+### Code Quality & Git Hooks
 
-The project includes pre-commit hooks that automatically run:
+The project includes automated git hooks that run code quality checks to maintain consistency across the team:
+
+**Pre-commit hooks** (run before each commit):
 - Code compilation with warnings as errors
 - Code formatting (`mix format`)
 - Dependency cleanup
-- Test coverage generation
+- Full test suite
+- Coverage report generation
 
-Run quality checks manually:
+**Pre-push hooks** (run before pushing to remote):
+- Comprehensive dependency checks
+- TODO/FIXME comment validation
+- Complete test suite with coverage
+
+**Setting up hooks** (required for all developers):
+```bash
+# After cloning the repo, run this once:
+./scripts/setup-hooks.sh
+```
+
+**Manual quality checks:**
 ```bash
 # Run all pre-commit checks
 mix precommit
@@ -106,11 +125,14 @@ mix coveralls.html
 
 ## Development Workflow
 
-1. **Make changes** to your code
-2. **Run tests** with `mix test` 
-3. **Check formatting** with `mix format`
-4. **Commit changes** - pre-commit hooks will run automatically
-5. **Push to GitHub** - CI/CD pipeline will run tests and coverage
+1. **Setup git hooks** (first time only): `./scripts/setup-hooks.sh`
+2. **Make changes** to your code
+3. **Run tests** with `mix test` 
+4. **Check formatting** with `mix format`
+5. **Commit changes** - pre-commit hooks will run automatically and catch any issues
+6. **Push to GitHub** - pre-push hooks + CI/CD pipeline will run comprehensive checks
+
+> 💡 **Tip**: The git hooks will automatically format your code and run tests. If hooks fail, fix the issues and commit again.
 
 ## Useful Commands
 

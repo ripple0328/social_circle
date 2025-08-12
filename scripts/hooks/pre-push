@@ -1,0 +1,92 @@
+#!/bin/sh
+#
+# Pre-push hook for SocialCircle Elixir/Phoenix project
+# This hook runs additional checks before pushing to remote repository
+#
+
+echo "🚀 Running pre-push checks..."
+
+# Check if we're in the right directory
+if [ ! -f "mix.exs" ]; then
+    echo "❌ Error: mix.exs not found. Are you in the project root?"
+    exit 1
+fi
+
+# Check if Mix is available
+if ! command -v mix >/dev/null 2>&1; then
+    echo "❌ Error: Mix is not installed or not in PATH"
+    exit 1
+fi
+
+# Get the range of commits being pushed
+remote="$1"
+url="$2"
+
+# Read from stdin to get the list of refs being pushed
+while read local_ref local_sha remote_ref remote_sha; do
+    if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+        # Handle delete - no checks needed
+        continue
+    fi
+    
+    if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+        # New branch - check all commits
+        range="$local_sha"
+    else
+        # Update - check commits between remote and local
+        range="$remote_sha..$local_sha"
+    fi
+    
+    # Get the list of commits
+    commits=$(git rev-list "$range" 2>/dev/null)
+    
+    if [ -n "$commits" ]; then
+        echo "🔍 Checking commits for branch $local_ref..."
+        
+        # Run comprehensive checks
+        echo "📋 Running comprehensive pre-push checks..."
+        
+        # Compile with warnings as errors
+        echo "🔨 Compiling with warnings as errors..."
+        if ! mix compile --warning-as-errors; then
+            echo "❌ Compilation failed with warnings/errors"
+            exit 1
+        fi
+        
+        # Check code formatting
+        echo "🎨 Checking code formatting..."
+        if ! mix format --check-formatted; then
+            echo "❌ Code is not properly formatted"
+            echo "💡 Run 'mix format' to fix formatting issues"
+            exit 1
+        fi
+        
+        # Run full test suite
+        echo "🧪 Running full test suite..."
+        if ! mix test; then
+            echo "❌ Tests failed"
+            exit 1
+        fi
+        
+        # Check for dependencies issues
+        echo "📦 Checking dependencies..."
+        if ! mix deps.get --only prod; then
+            echo "❌ Dependency issues found"
+            exit 1
+        fi
+        
+        # Check if there are any TODO or FIXME comments in the diff
+        echo "📝 Checking for TODO/FIXME comments in new code..."
+        todo_count=$(git diff "$remote_sha..$local_sha" --name-only | xargs grep -l "TODO\|FIXME" 2>/dev/null | wc -l)
+        if [ "$todo_count" -gt 0 ]; then
+            echo "⚠️  Warning: Found TODO/FIXME comments in the code being pushed"
+            echo "💡 Consider resolving these before pushing to production"
+            # Don't fail on TODO/FIXME, just warn
+        fi
+        
+        echo "✅ All pre-push checks passed for $local_ref!"
+    fi
+done
+
+echo "🎉 Ready to push!"
+exit 0
