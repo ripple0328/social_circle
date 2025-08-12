@@ -57,3 +57,4 @@ npm-debug.log
 
 # Temporary development data
 /dev/data/
+.crush
