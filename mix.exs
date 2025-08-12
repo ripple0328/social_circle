@@ -126,7 +126,7 @@ defmodule SocialCircle.MixProject do
         "credo --strict",
         "dialyzer",
         "sobelow",
-        "test"
+        "cmd MIX_ENV=test mix test"
       ]
     ]
   end
