@@ -1,3 +1,51 @@
+# .mise.toml - Team-wide tool version consistency
+# This file ensures all developers use the same versions of tools
+
 [tools]
+# Core Elixir/Erlang versions
 erlang = "28.0.2"
 elixir = "1.18.4-otp-28"
+
+
+# Development tools
+"github:cli/cli" = "latest"
+docker = "latest"
+docker-compose = "latest"
+
+# Optional but recommended
+just = "latest"  # Command runner as alternative to Make
+
+[settings]
+# Automatically install tools on cd
+auto_install = true
+
+# Use system packages when possible
+use_versions_host = true
+
+[env]
+# Environment variables for consistent development
+ELIXIR_ERL_OPTIONS = "+fnu"
+ERL_AFLAGS = "-kernel shell_history enabled"
+
+# Mix settings
+MIX_ENV = "dev"
+MIX_HOME = "$HOME/.cache/mix"
+HEX_HOME = "$HOME/.cache/hex"
+
+# Database URL for development
+DATABASE_URL = "postgres://postgres:postgres@localhost/social_circle_dev"
+
+# Phoenix settings
+PHX_SERVER = "true"
+PORT = "4000"
+
+[plugins]
+# Custom plugins for social media development
+# (These can be added as the project grows)
+
+[tasks]
+# Custom commands for the project
+setup = "mix deps.get && mix ecto.setup && mix assets.setup && mix assets.build"
+dev = "mix phx.server"
+test = "mix test"
+quality = "mix quality"

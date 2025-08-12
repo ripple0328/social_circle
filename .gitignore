@@ -35,3 +35,25 @@ social_circle-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Dialyzer PLT files
+/priv/plts/
+
+# Development environment files
+.env
+.env.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Log files
+*.log
+
+# Temporary development data
+/dev/data/

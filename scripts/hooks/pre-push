@@ -46,25 +46,11 @@ while read local_ref local_sha remote_ref remote_sha; do
         # Run comprehensive checks
         echo "📋 Running comprehensive pre-push checks..."
         
-        # Compile with warnings as errors
-        echo "🔨 Compiling with warnings as errors..."
-        if ! mix compile --warning-as-errors; then
-            echo "❌ Compilation failed with warnings/errors"
-            exit 1
-        fi
-        
-        # Check code formatting
-        echo "🎨 Checking code formatting..."
-        if ! mix format --check-formatted; then
-            echo "❌ Code is not properly formatted"
-            echo "💡 Run 'mix format' to fix formatting issues"
-            exit 1
-        fi
-        
-        # Run full test suite
-        echo "🧪 Running full test suite..."
-        if ! mix test; then
-            echo "❌ Tests failed"
+        # Run the full quality suite
+        echo "🎯 Running full quality checks..."
+        if ! mix quality; then
+            echo "❌ Quality checks failed (compile, format, credo, dialyzer, tests)"
+            echo "💡 Run 'mix quality' locally to see detailed issues"
             exit 1
         fi
         

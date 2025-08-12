@@ -11,14 +11,16 @@ The `hooks/` subdirectory contains git hooks that enforce code quality and consi
 - **`pre-commit`** - Runs before each commit to ensure code quality
   - Compiles code with warnings as errors
   - Runs code formatting (`mix format`)
+  - Static code analysis with Credo
+  - Security scanning with Sobelow
   - Cleans up unused dependencies
-  - Runs full test suite
-  - Generates coverage report
+  - Runs full test suite with coverage
 
 - **`pre-push`** - Runs before pushing to remote repository
-  - Performs comprehensive dependency checks
+  - Runs comprehensive quality suite (`mix quality`)
+  - Includes Dialyzer type checking
+  - Performs dependency conflict checks
   - Validates TODO/FIXME comments
-  - Runs complete test suite with coverage validation
 
 ### Setup
 
@@ -35,13 +37,17 @@ This creates symbolic links from `.git/hooks/` to the hooks in this directory, e
 You can test the hooks manually:
 
 ```bash
-# Test pre-commit checks
+# Test pre-commit checks (fast)
 mix precommit
 
+# Test comprehensive quality suite (includes Dialyzer)
+mix quality
+
 # Test individual components
-mix compile --warnings-as-errors
+mix credo --strict
+mix sobelow
+mix dialyzer
 mix format --check-formatted
-mix test
 mix coveralls.html
 ```
 

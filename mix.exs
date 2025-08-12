@@ -18,7 +18,16 @@ defmodule SocialCircle.MixProject do
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test,
-        "coveralls.cobertura": :test
+        "coveralls.cobertura": :test,
+        credo: :test,
+        dialyzer: :dev,
+        sobelow: :dev
+      ],
+      dialyzer: [
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
+        plt_add_apps: [:mix, :ex_unit],
+        ignore_warnings: ".dialyzer_ignore.exs",
+        list_unused_filters: true
       ]
     ]
   end
@@ -74,7 +83,10 @@ defmodule SocialCircle.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
-      {:excoveralls, "~> 0.18", only: :test}
+      {:excoveralls, "~> 0.18", only: :test},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -104,7 +116,17 @@ defmodule SocialCircle.MixProject do
         "compile --warning-as-errors",
         "deps.unlock --unused",
         "format",
+        "credo --strict",
+        "sobelow",
         "coveralls.html"
+      ],
+      quality: [
+        "compile --warning-as-errors",
+        "format --check-formatted",
+        "credo --strict",
+        "dialyzer",
+        "sobelow",
+        "test"
       ]
     ]
   end

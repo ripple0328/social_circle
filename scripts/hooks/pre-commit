@@ -22,8 +22,10 @@ fi
 # - compile --warning-as-errors
 # - deps.unlock --unused  
 # - format
-# - test
-echo "📋 Running mix precommit (compile, format, test)..."
+# - credo --strict
+# - sobelow --config
+# - test with coverage
+echo "📋 Running mix precommit (compile, format, credo, sobelow, test)..."
 if ! mix precommit; then
     echo ""
     echo "❌ Pre-commit checks failed!"

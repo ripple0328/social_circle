@@ -2,23 +2,22 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [ main, develop ]
   pull_request:
-    branches: [main]
+    branches: [ main, develop ]
 
 env:
   MIX_ENV: test
-  ELIXIR_VERSION: "1.18.4"
-  OTP_VERSION: "28.0.2"
+  ELIXIR_VERSION: '1.18.4'
+  OTP_VERSION: '28.0.2'
 
 jobs:
   test:
     name: Test Suite
-    runs-on: ubuntu-latest
-    environment: test
-
+    runs-on: ubuntu-22.04
+    
     services:
-      postgres:
+      db:
         image: postgres:17
         env:
           POSTGRES_USER: postgres
@@ -31,100 +30,233 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+    
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: ${{ env.ELIXIR_VERSION }}
+        otp-version: ${{ env.OTP_VERSION }}
+    
+    - name: Restore dependencies cache
+      uses: actions/cache@v4
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-
+    
+    - name: Install dependencies
+      run: mix deps.get
+    
+    - name: Check Formatting
+      run: mix format --check-formatted
+    
+    - name: Compile (warnings as errors)
+      run: mix compile --warnings-as-errors
+    
+    - name: Setup database
+      run: mix ecto.setup
+    
+    - name: Run tests with coverage
+      run: mix coveralls.github
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
+  security:
+    name: Security Scan
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: ${{ env.ELIXIR_VERSION }}
+        otp-version: ${{ env.OTP_VERSION }}
+    
+    - name: Restore dependencies cache
+      uses: actions/cache@v4
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-
+    
+    - name: Install dependencies
+      run: mix deps.get
+    
+    - name: Run Sobelow security scan
+      run: mix sobelow --config
 
-      - name: Cache deps
-        id: mix-cache
-        uses: actions/cache@v4
-        with:
-          path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: ${{ env.ELIXIR_VERSION }}
+        otp-version: ${{ env.OTP_VERSION }}
+    
+    - name: Restore dependencies cache
+      uses: actions/cache@v4
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-
+    
+    - name: Restore PLT cache
+      uses: actions/cache@v4
+      with:
+        path: priv/plts
+        key: ${{ runner.os }}-plt-${{ env.OTP_VERSION }}-${{ env.ELIXIR_VERSION }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-plt-${{ env.OTP_VERSION }}-${{ env.ELIXIR_VERSION }}-
+          ${{ runner.os }}-plt-${{ env.OTP_VERSION }}-
+          ${{ runner.os }}-plt-
+    
+    - name: Install dependencies
+      run: mix deps.get
+    
+    - name: Run Credo
+      run: mix credo --strict
+    
+    - name: Create PLTs
+      run: mix dialyzer --plt
+    
+    - name: Run Dialyzer
+      run: mix dialyzer
 
-      - name: Cache build
-        uses: actions/cache@v4
-        with:
-          path: _build
-          key: ${{ runner.os }}-build-${{ env.MIX_ENV }}-${{ hashFiles('**/mix.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.MIX_ENV }}-
-            ${{ runner.os }}-build-
-
-      - name: Install dependencies
-        if: steps.mix-cache.outputs.cache-hit != 'true'
-        run: mix deps.get
-
-      - name: Compile dependencies
-        run: mix deps.compile
-
-      - name: Compile application
-        run: mix compile --warnings-as-errors
-
-      - name: Check formatting
-        run: mix format --check-formatted
-
-      - name: Setup database
-        run: mix ecto.setup
-
-      - name: Run tests with coverage
-        run: mix coveralls.post
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+  vulnerability-scan:
+    name: Dependency Vulnerability Scan  
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: ${{ env.ELIXIR_VERSION }}
+        otp-version: ${{ env.OTP_VERSION }}
+    
+    - name: Install dependencies
+      run: mix deps.get
+    
+    - name: Check for unused dependencies
+      run: mix deps.unlock --check-unused
+    
+    - name: Check dependency conflicts
+      run: mix deps.get --only prod
 
   assets:
-    name: Build Assets
-    runs-on: ubuntu-latest
-
+    name: Assets Build
+    runs-on: ubuntu-22.04
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+    
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: ${{ env.ELIXIR_VERSION }}
+        otp-version: ${{ env.OTP_VERSION }}
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    - name: Install dependencies
+      run: mix deps.get
+    
+    - name: Setup assets
+      run: mix assets.setup
+    
+    - name: Build assets
+      run: mix assets.build
+    
+    - name: Test assets deployment
+      run: mix assets.deploy
 
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
-
-      - name: Cache deps
-        uses: actions/cache@v4
-        with:
-          path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-
-
-      - name: Install dependencies
-        run: mix deps.get
-
-      - name: Setup assets
-        run: mix assets.setup
-
-      - name: Build assets
-        run: mix assets.deploy
-
-  deploy:
-    name: Deploy to Fly.io
-    runs-on: ubuntu-latest
-    environment: production
-    needs: [test, assets]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Fly CLI
-        uses: superfly/flyctl-actions/setup-flyctl@master
-
-      - name: Deploy to Fly.io
-        run: flyctl deploy --remote-only
+  performance:
+    name: Performance Benchmarks
+    runs-on: ubuntu-22.04
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    services:
+      db:
+        image: postgres:17
         env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: social_circle_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: ${{ env.ELIXIR_VERSION }}
+        otp-version: ${{ env.OTP_VERSION }}
+    
+    - name: Install dependencies
+      run: mix deps.get
+    
+    - name: Setup database
+      run: mix ecto.setup
+    
+    - name: Run benchmarks
+      run: |
+        # Add benchmark commands when available
+        echo "Performance benchmarks would run here"
+        # mix run benchmarks/api_performance.exs
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-22.04
+    needs: [test, security, quality, vulnerability-scan, assets]
+    if: github.ref == 'refs/heads/develop'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Deploy to Staging
+      run: |
+        echo "Staging deployment would happen here"
+        # Add actual deployment commands for staging environment
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-22.04
+    needs: [test, security, quality, vulnerability-scan, assets, performance]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Fly CLI
+      uses: superfly/flyctl-actions/setup-flyctl@master
+    
+    - name: Deploy to Fly.io
+      run: flyctl deploy --remote-only
+      env:
+        FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+    
+    - name: Run Smoke Tests
+      run: |
+        echo "Smoke tests would run here"
+        # Add smoke tests to verify deployment success

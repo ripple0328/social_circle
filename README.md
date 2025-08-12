@@ -30,9 +30,29 @@
 
 Visit the live application at **[social.qingbo.us](https://social.qingbo.us)**
 
+## 🛠️ Development
+
+**Quick Start:**
+```bash
+# Setup development environment
+./scripts/setup-hooks.sh     # Git hooks (one-time)
+docker compose up -d          # Start services  
+mix deps.get                  # Dependencies
+mix ecto.setup                # Database + seeds
+mix dialyzer --plt            # Type checking setup
+mix phx.server                # Start Phoenix
+```
+
+**Quality Tools:**
+- 🔍 **Credo** - Static code analysis
+- 🔒 **Sobelow** - Security scanning  
+- 🎯 **Dialyzer** - Type checking
+- ✅ **ExCoveralls** - Test coverage
+- 🪝 **Git Hooks** - Automated quality checks
+
 ## 🤝 Contributing
 
 We welcome contributions! Please check out:
-1. [Development Guide](./DEVELOPMENT.md) for local setup
+1. [Development Guide](./DEVELOPMENT.md) for comprehensive setup
 2. [GitHub Issues](https://github.com/ripple0328/social_circle/issues) for feature requests and bugs
 3. [Pull Request Guidelines](./DEVELOPMENT.md#development-workflow)
