@@ -165,7 +165,7 @@ docker ps
 mix db.logs
 
 # Connect to database directly
-mix db.connect
+docker compose exec db psql -U postgres -d social_circle_dev
 ```
 
 ### Asset Issues

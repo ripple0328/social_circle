@@ -100,7 +100,6 @@ defmodule SocialCircle.MixProject do
       "db.up": ["cmd docker compose up -d db"],
       "db.down": ["cmd docker compose down db"],
       "db.logs": ["cmd docker compose logs db"],
-      "db.connect": ["cmd docker compose exec db psql -U postgres -d social_circle_dev"],
       precommit: [
         "compile --warning-as-errors",
         "deps.unlock --unused",
