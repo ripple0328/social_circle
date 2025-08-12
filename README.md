@@ -1,6 +1,8 @@
-# SocialCircle
-
-A unified social media management platform that aggregates content from multiple platforms, enables cross-platform posting, and provides deep analytics insights about your digital social life.
+<div align="center">
+  <img src="./priv/static/images/logo.svg" alt="SocialCircle Logo" width="80" height="80">
+  <h1>SocialCircle</h1>
+  <p><em>A unified social media management platform that aggregates content from multiple platforms, enables cross-platform posting, and provides deep analytics insights about your digital social life.</em></p>
+</div>
 
 ## 🚀 Main Features
 
