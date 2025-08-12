@@ -1,0 +1,18 @@
+# Configuration for Coveralls coverage reporting
+repo_token: $COVERALLS_REPO_TOKEN
+
+# Coverage options
+coverage_options:
+  minimum_coverage: 80
+  treat_no_relevant_lines_as_covered: true
+
+# Skip files from coverage
+skip_files:
+  - deps/
+  - _build/
+  - test/
+  - priv/
+  - assets/
+
+# Custom service name for GitHub Actions
+service_name: github-actions

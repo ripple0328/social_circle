@@ -15,6 +15,7 @@ jobs:
   test:
     name: Test Suite
     runs-on: ubuntu-latest
+    environment: test
 
     services:
       postgres:
@@ -74,8 +75,10 @@ jobs:
       - name: Setup database
         run: mix ecto.setup
 
-      - name: Run tests
-        run: mix test
+      - name: Run tests with coverage
+        run: mix coveralls.post
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
 
   assets:
     name: Build Assets
