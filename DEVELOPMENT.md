@@ -38,9 +38,9 @@ mise use elixir@1.18 erlang@28
 
 ## Database Setup
 
-1. Start PostgreSQL with Docker Compose:
+1. Start PostgreSQL database:
    ```bash
-   docker-compose up -d db
+   mix db.up
    ```
 
 2. Setup the database:
@@ -74,7 +74,8 @@ mise use elixir@1.18 erlang@28
 - Run migrations: `mix ecto.migrate` 
 - Rollback migration: `mix ecto.rollback`
 - Reset database: `mix ecto.reset`
-- Stop database: `docker-compose down`
+- Start database: `mix db.up`
+- Stop database: `mix db.down`
 
 ## Testing
 
@@ -161,10 +162,10 @@ mix hex.outdated
 docker ps
 
 # View database logs
-docker-compose logs db
+mix db.logs
 
 # Connect to database directly
-docker-compose exec db psql -U postgres -d social_circle_dev
+mix db.connect
 ```
 
 ### Asset Issues
