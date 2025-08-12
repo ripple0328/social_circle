@@ -1,5 +1,18 @@
 # SocialCircle
 
+A unified social media management platform that aggregates content from multiple platforms, enables cross-platform posting, and provides deep analytics insights about your digital social life.
+
+## 🚀 Main Features
+
+- **Content Aggregation**: View all your social media posts from X, Facebook, Instagram, Weibo, and LinkedIn in one unified grid layout
+- **Cross-Platform Posting**: Write once, post everywhere - create content and automatically sync to all your social platforms
+- **Analytics Dashboard**: Track posting frequency, engagement rates, and content performance across platforms
+- **Geolocation Insights**: Analyze your activity patterns and travel history from location-tagged posts
+- **Social Network Analysis**: Understand your friend circles, community groups, and social interactions
+- **Real-time Updates**: Live dashboard with Phoenix LiveView for instant content updates
+
+📋 **See [ROADMAP.md](./ROADMAP.md) for detailed development phases and timeline**
+
 ## Local Development Setup
 
 ### Prerequisites
