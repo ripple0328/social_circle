@@ -9,7 +9,8 @@ import Config
 
 config :social_circle,
   ecto_repos: [SocialCircle.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  ash_domains: [SocialCircle.Accounts]
 
 # Configures the endpoint
 config :social_circle, SocialCircleWeb.Endpoint,

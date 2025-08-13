@@ -1,0 +1,6 @@
+- always write test first, then run test let it fail, then implement, verify test pass, then pause with a manual demostration workflow for manual verify and feedback
+- always use liveview instead of traditional controller
+- alway use instruction from Development.md for dev workflow
+- always start with a user workflow and design first, after review confirmed, then start implement
+- always follow all guidelines from AGENTS.md
+- always prefer Ash Framework over traditional Ecto patterns

@@ -57,6 +57,7 @@ defmodule SocialCircle.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:igniter, "~> 0.6", only: [:dev, :test]},
       {:phoenix, "~> 1.8.0"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.13"},
@@ -86,7 +87,20 @@ defmodule SocialCircle.MixProject do
       {:excoveralls, "~> 0.18", only: :test},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false}
+      {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
+      # Ash Framework (latest versions)
+      {:ash, "~> 3.5"},
+      {:ash_postgres, "~> 2.6"},
+      {:ash_phoenix, "~> 2.3"},
+      {:picosat_elixir, "~> 0.2"},
+      # OAuth dependencies (latest compatible versions)
+      {:ueberauth, "~> 0.10"},
+      {:ueberauth_google, "~> 0.12"},
+      {:ueberauth_facebook, "~> 0.10"},
+      {:ueberauth_twitter, "~> 0.4"},
+      {:ueberauth_apple, "~> 0.6"},
+      # for debugging
+      {:tidewave, "~> 0.3", only: [:dev]}
     ]
   end
 

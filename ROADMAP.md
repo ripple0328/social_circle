@@ -5,15 +5,16 @@ A unified social media management platform that aggregates content, enables cros
 
 ## 📋 Phase 1: Foundation (Months 1-2)
 **Core Infrastructure**
-- [ ] User authentication system
+- [ ] Social authentication system (OAuth with X, Facebook, Google, Apple ID)
+- [ ] User account linking and management
 - [ ] Database schema for multi-platform content
 - [ ] Basic Phoenix LiveView dashboard
-- [ ] Docker deployment setup
+- [ ] deployment setup
 
 **Initial Platform Integration**
-- [ ] Twitter/X API integration (read-only)
+- [ ] X API integration (read-only)
 - [ ] Basic content aggregation
-- [ ] Grid layout for content display
+- [ ] Grid layout for content display/responsive design
 - [ ] Real-time updates with LiveView
 
 ## 📋 Phase 2: Content Aggregation (Months 2-3)
@@ -39,7 +40,7 @@ A unified social media management platform that aggregates content, enables cros
 - [ ] Batch posting to multiple platforms
 
 **Platform APIs (Write)**
-- [ ] Twitter/X posting
+- [ ] X posting
 - [ ] Facebook posting
 - [ ] Weibo posting
 - [ ] Instagram posting (via Business API)
@@ -103,7 +104,7 @@ A unified social media management platform that aggregates content, enables cros
 - Background job processing for API calls
 
 **APIs & Integrations**
-- Twitter API v2
+- X API v2
 - Facebook Graph API
 - Instagram Basic Display API
 - Weibo API
@@ -111,11 +112,13 @@ A unified social media management platform that aggregates content, enables cros
 - Google Maps API (for geolocation)
 
 ## 🔒 Security & Privacy Considerations
-- OAuth 2.0 for platform authentication
-- Encrypted token storage
+- OAuth 2.0 for social authentication (X, Facebook, Google, Apple ID)
+- Multi-provider authentication with account linking
+- Encrypted token storage for all connected accounts
 - GDPR compliance features
 - User data export/deletion
 - Rate limiting and API quota management
+- Secure session management across platforms
 
 ## 📊 Success Metrics
 - Number of platforms integrated
