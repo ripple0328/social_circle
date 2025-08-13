@@ -9,8 +9,6 @@ elixir = "1.18.4-otp-28"
 
 # Development tools
 "github:cli/cli" = "latest"
-docker = "latest"
-docker-compose = "latest"
 
 # Optional but recommended
 just = "latest"  # Command runner as alternative to Make
@@ -28,9 +26,7 @@ ELIXIR_ERL_OPTIONS = "+fnu"
 ERL_AFLAGS = "-kernel shell_history enabled"
 
 # Mix settings
-MIX_ENV = "dev"
-MIX_HOME = "$HOME/.cache/mix"
-HEX_HOME = "$HOME/.cache/hex"
+
 
 # Database URL for development
 DATABASE_URL = "postgres://postgres:postgres@localhost/social_circle_dev"
