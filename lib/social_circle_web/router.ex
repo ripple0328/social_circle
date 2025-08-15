@@ -14,7 +14,6 @@ defmodule SocialCircleWeb.Router do
     plug :accepts, ["json"]
   end
 
-
   scope "/", SocialCircleWeb do
     pipe_through :browser
 
@@ -36,14 +35,14 @@ defmodule SocialCircleWeb.Router do
 
     # OAuth provider redirects
     get "/:provider", AuthController, :provider
-    
+
     # OAuth callbacks
     get "/:provider/callback", AuthController, :callback
-    
+
     # Account linking (for authenticated users)
     get "/:provider/link", AuthController, :provider
     get "/:provider/link/callback", AuthController, :link_callback
-    
+
     # Session management
     delete "/logout", AuthController, :logout
   end

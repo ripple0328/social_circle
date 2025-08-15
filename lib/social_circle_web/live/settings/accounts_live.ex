@@ -6,10 +6,10 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
   @impl true
   def mount(_params, session, socket) do
     current_user_id = session["user_id"]
-    
+
     if current_user_id do
       user = load_user_with_providers(current_user_id)
-      
+
       {:ok,
        socket
        |> assign(:current_user, user)
@@ -26,18 +26,19 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
   def handle_event("connect_provider", %{"provider" => provider}, socket) do
     case provider do
       provider when provider in ["x", "facebook", "google", "apple"] ->
-        oauth_path = case provider do
-          "x" -> ~p"/auth/x/link"
-          "facebook" -> ~p"/auth/facebook/link"
-          "google" -> ~p"/auth/google/link"
-          "apple" -> ~p"/auth/apple/link"
-        end
-        
+        oauth_path =
+          case provider do
+            "x" -> ~p"/auth/x/link"
+            "facebook" -> ~p"/auth/facebook/link"
+            "google" -> ~p"/auth/google/link"
+            "apple" -> ~p"/auth/apple/link"
+          end
+
         {:noreply,
          socket
          |> assign(:connecting_provider, provider)
          |> push_navigate(to: oauth_path)}
-      
+
       _ ->
         {:noreply,
          socket
@@ -49,7 +50,7 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
   @impl true
   def handle_event("show_disconnect_modal", %{"provider_id" => provider_id}, socket) do
     linked_provider = Enum.find(socket.assigns.linked_providers, &(&1.id == provider_id))
-    
+
     {:noreply,
      socket
      |> assign(:show_disconnect_modal, true)
@@ -67,13 +68,13 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
   @impl true
   def handle_event("confirm_disconnect", _params, socket) do
     provider_to_disconnect = socket.assigns.provider_to_disconnect
-    
+
     if provider_to_disconnect do
       case SocialCircle.Accounts.LinkedProvider.remove_linked_provider(provider_to_disconnect) do
         :ok ->
           # Reload user data
           updated_user = load_user_with_providers(socket.assigns.current_user.id)
-          
+
           {:noreply,
            socket
            |> assign(:current_user, updated_user)
@@ -81,7 +82,7 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
            |> assign(:show_disconnect_modal, false)
            |> assign(:provider_to_disconnect, nil)
            |> put_flash(:info, "Account disconnected successfully")}
-        
+
         {:error, _error} ->
           {:noreply,
            socket
@@ -110,8 +111,8 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
               Manage your social media account connections
             </p>
           </div>
-
-          <!-- Primary Account -->
+          
+    <!-- Primary Account -->
           <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
               <h2 class="text-lg font-medium text-gray-900">Primary Account</h2>
@@ -144,8 +145,8 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
               </div>
             </div>
           </div>
-
-          <!-- Linked Accounts -->
+          
+    <!-- Linked Accounts -->
           <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
               <h2 class="text-lg font-medium text-gray-900">Additional Accounts</h2>
@@ -156,9 +157,11 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
                   <.icon name="hero-link" class="h-6 w-6 text-gray-400" />
                 </div>
                 <h3 class="mt-2 text-sm font-medium text-gray-900">No additional accounts</h3>
-                <p class="mt-1 text-sm text-gray-500">Connect more accounts to aggregate all your social media.</p>
+                <p class="mt-1 text-sm text-gray-500">
+                  Connect more accounts to aggregate all your social media.
+                </p>
               </div>
-              
+
               <div :if={@linked_providers != []} class="space-y-4">
                 <div
                   :for={provider <- @linked_providers}
@@ -195,8 +198,8 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
               </div>
             </div>
           </div>
-
-          <!-- Add More Accounts -->
+          
+    <!-- Add More Accounts -->
           <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
               <h2 class="text-lg font-medium text-gray-900">Connect More Accounts</h2>
@@ -212,9 +215,13 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
                     class="relative w-full flex flex-col items-center justify-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                   >
                     <span :if={@connecting_provider == provider} class="absolute top-2 right-2">
-                      <div class="animate-spin h-4 w-4 border-2 border-indigo-600 border-t-transparent rounded-full"></div>
+                      <div class="animate-spin h-4 w-4 border-2 border-indigo-600 border-t-transparent rounded-full">
+                      </div>
                     </span>
-                    <.icon name={get_provider_icon_name(String.to_atom(provider))} class="h-8 w-8 mb-2" />
+                    <.icon
+                      name={get_provider_icon_name(String.to_atom(provider))}
+                      class="h-8 w-8 mb-2"
+                    />
                     <span class="text-sm font-medium text-gray-700">
                       Connect {String.capitalize(provider)}
                     </span>
@@ -225,8 +232,8 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
           </div>
         </div>
       </div>
-
-      <!-- Disconnect Confirmation Modal -->
+      
+    <!-- Disconnect Confirmation Modal -->
       <div
         :if={@show_disconnect_modal}
         class="fixed inset-0 z-50 overflow-y-auto"
@@ -236,8 +243,11 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
       >
         <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center">
           <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-          
-          <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" phx-click-away="hide_disconnect_modal">
+
+          <div
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+            phx-click-away="hide_disconnect_modal"
+          >
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               <div class="sm:flex sm:items-start">
                 <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -249,10 +259,10 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
                   </h3>
                   <div class="mt-2">
                     <p class="text-sm text-gray-500">
-                      Are you sure you want to disconnect your 
+                      Are you sure you want to disconnect your
                       <span :if={@provider_to_disconnect} class="font-medium">
                         {String.capitalize(to_string(@provider_to_disconnect.provider))}
-                      </span> 
+                      </span>
                       account? This action cannot be undone.
                     </p>
                   </div>
@@ -287,7 +297,7 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
   defp load_user_with_providers(user_id) do
     # Create a test actor for authorization bypass in tests
     actor = %{test_env: true, id: user_id}
-    
+
     SocialCircle.Accounts.User
     |> Ash.get!(user_id, actor: actor)
     |> Ash.load!(:linked_providers, actor: actor)
@@ -295,15 +305,18 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
 
   defp available_providers(current_user, linked_providers) do
     all_providers = ["x", "facebook", "google", "apple"]
-    connected_providers = [to_string(current_user.provider) | Enum.map(linked_providers, &to_string(&1.provider))]
-    
+
+    connected_providers = [
+      to_string(current_user.provider) | Enum.map(linked_providers, &to_string(&1.provider))
+    ]
+
     Enum.filter(all_providers, fn provider ->
       provider not in connected_providers
     end)
   end
 
   defp get_provider_icon_name(:x), do: "hero-at-symbol"
-  defp get_provider_icon_name(:facebook), do: "hero-user-group" 
+  defp get_provider_icon_name(:facebook), do: "hero-user-group"
   defp get_provider_icon_name(:google), do: "hero-globe-alt"
   defp get_provider_icon_name(:apple), do: "hero-device-phone-mobile"
   defp get_provider_icon_name(_), do: "hero-user"
@@ -311,9 +324,9 @@ defmodule SocialCircleWeb.Settings.AccountsLive do
   defp format_last_sync(datetime) when is_struct(datetime) do
     case DateTime.diff(DateTime.utc_now(), datetime, :second) do
       diff when diff < 60 -> "#{diff} seconds ago"
-      diff when diff < 3600 -> "#{div(diff, 60)} minutes ago" 
-      diff when diff < 86400 -> "#{div(diff, 3600)} hours ago"
-      _ -> "#{div(DateTime.diff(DateTime.utc_now(), datetime, :second), 86400)} days ago"
+      diff when diff < 3600 -> "#{div(diff, 60)} minutes ago"
+      diff when diff < 86_400 -> "#{div(diff, 3600)} hours ago"
+      _ -> "#{div(DateTime.diff(DateTime.utc_now(), datetime, :second), 86_400)} days ago"
     end
   end
 

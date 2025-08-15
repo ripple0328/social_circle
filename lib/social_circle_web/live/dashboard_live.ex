@@ -4,7 +4,7 @@ defmodule SocialCircleWeb.DashboardLive do
   @impl true
   def mount(_params, session, socket) do
     current_user_id = session["user_id"]
-    
+
     if current_user_id do
       {:ok,
        socket
@@ -23,11 +23,14 @@ defmodule SocialCircleWeb.DashboardLive do
           <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
           <p class="mt-2 text-gray-600">Welcome to your social media dashboard</p>
         </div>
-        
+
         <div class="bg-white shadow rounded-lg p-6">
           <h2 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h2>
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <.link navigate={~p"/settings/accounts"} class="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50">
+            <.link
+              navigate={~p"/settings/accounts"}
+              class="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
               <.icon name="hero-cog-6-tooth" class="h-8 w-8 text-indigo-600 mr-3" />
               <div>
                 <h3 class="text-sm font-medium text-gray-900">Manage Accounts</h3>

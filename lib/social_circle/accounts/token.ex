@@ -9,7 +9,7 @@ defmodule SocialCircle.Accounts.Token do
     extensions: [AshAuthentication.TokenResource]
 
   postgres do
-    table "auth_tokens"
-    repo SocialCircle.Repo
+    table("auth_tokens")
+    repo(SocialCircle.Repo)
   end
 end

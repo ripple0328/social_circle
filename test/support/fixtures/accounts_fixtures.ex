@@ -56,11 +56,15 @@ defmodule SocialCircle.AccountsFixtures do
     attrs
     |> Map.put(:provider, :apple)
     |> Map.put(:provider_id, "apple#{System.unique_integer()}")
-    |> Map.put(:avatar_url, nil)  # Apple doesn't provide avatars
+    # Apple doesn't provide avatars
+    |> Map.put(:avatar_url, nil)
     |> user_fixture()
   end
 
-  def user_with_linked_providers_fixture(primary_provider \\ :x, linked_providers \\ [:google, :facebook]) do
+  def user_with_linked_providers_fixture(
+        primary_provider \\ :x,
+        linked_providers \\ [:google, :facebook]
+      ) do
     # Create user with primary provider
     user = user_fixture(%{provider: primary_provider})
 
@@ -81,83 +85,85 @@ defmodule SocialCircle.AccountsFixtures do
   end
 
   def oauth_response_fixture(provider \\ :x, attrs \\ %{}) do
-    base_response = case provider do
-      :x ->
-        %{
-          "provider" => "x",
-          "uid" => "x#{System.unique_integer()}",
-          "info" => %{
-            "email" => unique_user_email(),
-            "name" => "X User #{System.unique_integer()}",
-            "nickname" => "xuser#{System.unique_integer()}",
-            "image" => "https://pbs.twimg.com/profile_images/#{System.unique_integer()}/avatar.jpg"
-          },
-          "extra" => %{
-            "raw_info" => %{
-              "user" => %{
-                "id" => "x#{System.unique_integer()}",
-                "username" => "xuser#{System.unique_integer()}",
-                "verified" => false,
-                "followers_count" => Enum.random(100..10000)
+    base_response =
+      case provider do
+        :x ->
+          %{
+            "provider" => "x",
+            "uid" => "x#{System.unique_integer()}",
+            "info" => %{
+              "email" => unique_user_email(),
+              "name" => "X User #{System.unique_integer()}",
+              "nickname" => "xuser#{System.unique_integer()}",
+              "image" =>
+                "https://pbs.twimg.com/profile_images/#{System.unique_integer()}/avatar.jpg"
+            },
+            "extra" => %{
+              "raw_info" => %{
+                "user" => %{
+                  "id" => "x#{System.unique_integer()}",
+                  "username" => "xuser#{System.unique_integer()}",
+                  "verified" => false,
+                  "followers_count" => Enum.random(100..10_000)
+                }
               }
             }
           }
-        }
 
-      :facebook ->
-        %{
-          "provider" => "facebook",
-          "uid" => "fb#{System.unique_integer()}",
-          "info" => %{
-            "email" => unique_user_email(),
-            "name" => "Facebook User #{System.unique_integer()}",
-            "image" => "https://graph.facebook.com/#{System.unique_integer()}/picture"
-          },
-          "extra" => %{
-            "raw_info" => %{
-              "id" => "fb#{System.unique_integer()}",
-              "name" => "Facebook User",
-              "verified" => false
+        :facebook ->
+          %{
+            "provider" => "facebook",
+            "uid" => "fb#{System.unique_integer()}",
+            "info" => %{
+              "email" => unique_user_email(),
+              "name" => "Facebook User #{System.unique_integer()}",
+              "image" => "https://graph.facebook.com/#{System.unique_integer()}/picture"
+            },
+            "extra" => %{
+              "raw_info" => %{
+                "id" => "fb#{System.unique_integer()}",
+                "name" => "Facebook User",
+                "verified" => false
+              }
             }
           }
-        }
 
-      :google ->
-        %{
-          "provider" => "google",
-          "uid" => "google#{System.unique_integer()}",
-          "info" => %{
-            "email" => unique_user_email(),
-            "name" => "Google User #{System.unique_integer()}",
-            "image" => "https://lh3.googleusercontent.com/a/avatar#{System.unique_integer()}"
-          },
-          "extra" => %{
-            "raw_info" => %{
-              "sub" => "google#{System.unique_integer()}",
-              "name" => "Google User",
-              "email_verified" => true
+        :google ->
+          %{
+            "provider" => "google",
+            "uid" => "google#{System.unique_integer()}",
+            "info" => %{
+              "email" => unique_user_email(),
+              "name" => "Google User #{System.unique_integer()}",
+              "image" => "https://lh3.googleusercontent.com/a/avatar#{System.unique_integer()}"
+            },
+            "extra" => %{
+              "raw_info" => %{
+                "sub" => "google#{System.unique_integer()}",
+                "name" => "Google User",
+                "email_verified" => true
+              }
             }
           }
-        }
 
-      :apple ->
-        %{
-          "provider" => "apple",
-          "uid" => "apple#{System.unique_integer()}.privaterelay",
-          "info" => %{
-            "email" => "privaterelay#{System.unique_integer()}@privaterelay.appleid.com",
-            "name" => "Apple User #{System.unique_integer()}"
-          },
-          "extra" => %{
-            "raw_info" => %{
-              "sub" => "apple#{System.unique_integer()}.privaterelay",
-              "email_verified" => true,
-              "is_private_email" => true,
-              "real_user_status" => 1
+        :apple ->
+          %{
+            "provider" => "apple",
+            "uid" => "apple#{System.unique_integer()}.privaterelay",
+            "info" => %{
+              "email" => "privaterelay#{System.unique_integer()}@privaterelay.appleid.com",
+              "name" => "Apple User #{System.unique_integer()}"
+            },
+            "extra" => %{
+              "raw_info" => %{
+                "sub" => "apple#{System.unique_integer()}.privaterelay",
+                "email_verified" => true,
+                "is_private_email" => true,
+                "real_user_status" => 1
+              }
             }
           }
-        }
-    end
+      end
 
     deep_merge(base_response, attrs)
   end
@@ -194,7 +200,10 @@ defmodule SocialCircle.AccountsFixtures do
 
   defp error_description("access_denied"), do: "The user denied the request"
   defp error_description("invalid_request"), do: "The request is missing a required parameter"
-  defp error_description("server_error"), do: "The authorization server encountered an unexpected condition"
+
+  defp error_description("server_error"),
+    do: "The authorization server encountered an unexpected condition"
+
   defp error_description(_), do: "An unknown error occurred"
 
   defp deep_merge(left, right) do

@@ -14,10 +14,10 @@ defmodule SocialCircleWeb.AuthLiveTest do
 
       # Check primary X authentication button
       assert has_element?(view, "button", "Continue with X")
-      
+
       # Check secondary authentication options
       assert has_element?(view, "button", "Continue with Facebook")
-      assert has_element?(view, "button", "Continue with Google") 
+      assert has_element?(view, "button", "Continue with Google")
       assert has_element?(view, "button", "Continue with Apple")
 
       # Check trust indicators
@@ -31,9 +31,14 @@ defmodule SocialCircleWeb.AuthLiveTest do
 
       # X button should have primary styling
       assert has_element?(view, "button[class*='auth-button-primary']", "Continue with X")
-      
+
       # Other buttons should have secondary styling
-      assert has_element?(view, "button[class*='auth-button-secondary']", "Continue with Facebook")
+      assert has_element?(
+               view,
+               "button[class*='auth-button-secondary']",
+               "Continue with Facebook"
+             )
+
       assert has_element?(view, "button[class*='auth-button-secondary']", "Continue with Google")
       assert has_element?(view, "button[class*='auth-button-secondary']", "Continue with Apple")
     end
@@ -83,9 +88,10 @@ defmodule SocialCircleWeb.AuthLiveTest do
       {:ok, view, _html} = live(conn, ~p"/auth")
 
       # Start OAuth flow
-      html = view
-             |> element("button", "Continue with X")
-             |> render_click()
+      html =
+        view
+        |> element("button", "Continue with X")
+        |> render_click()
 
       # Should show loading state
       assert html =~ "Connecting"
@@ -119,6 +125,7 @@ defmodule SocialCircleWeb.AuthLiveTest do
       conn = log_in_user(conn, user)
 
       result = live(conn, ~p"/auth")
+
       case result do
         {:error, {:redirect, %{to: "/dashboard"}}} -> :ok
         {:error, {:live_redirect, %{to: "/dashboard"}}} -> :ok
@@ -133,18 +140,20 @@ defmodule SocialCircleWeb.AuthLiveTest do
 
       # Check for mobile-responsive classes
       assert html =~ "auth-container"
-      assert html =~ "w-full"  # Full width buttons on mobile
+      # Full width buttons on mobile
+      assert html =~ "w-full"
     end
   end
 
   describe "account management page" do
     setup %{conn: conn} do
-      user = user_fixture(%{
-        provider: :x,
-        provider_id: "x123",
-        email: "test@example.com"
-      })
-      
+      user =
+        user_fixture(%{
+          provider: :x,
+          provider_id: "x123",
+          email: "test@example.com"
+        })
+
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
@@ -185,7 +194,7 @@ defmodule SocialCircleWeb.AuthLiveTest do
 
     test "allows disconnecting secondary accounts", %{conn: conn, user: user} do
       # Link a secondary account first
-      {:ok, _updated_user} = 
+      {:ok, _updated_user} =
         user
         |> Ash.Changeset.for_update(:link_provider, %{
           provider: :google,
@@ -196,7 +205,7 @@ defmodule SocialCircleWeb.AuthLiveTest do
       {:ok, view, _html} = live(conn, ~p"/settings/accounts")
 
       # Should show disconnect button for secondary account
-      assert has_element?(view, "button", "Disconnect") 
+      assert has_element?(view, "button", "Disconnect")
 
       # Click disconnect
       view
