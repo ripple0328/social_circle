@@ -11,7 +11,7 @@ defmodule SocialCircle.Accounts.UserTest do
 
   use SocialCircle.DataCase
 
-  alias SocialCircle.Accounts.{User, LinkedProvider}
+  alias SocialCircle.Accounts.{LinkedProvider, User}
 
   describe "create_from_oauth action" do
     test "creates user with valid OAuth data" do

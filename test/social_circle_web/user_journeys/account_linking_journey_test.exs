@@ -12,7 +12,7 @@ defmodule SocialCircleWeb.UserJourneys.AccountLinkingJourneyTest do
   use SocialCircleWeb.ConnCase
   import Phoenix.LiveViewTest
 
-  alias SocialCircle.Accounts.{User, LinkedProvider}
+  alias SocialCircle.Accounts.{LinkedProvider, User}
 
   describe "Account linking user journey" do
     test "user can access account settings and see primary account", %{conn: conn} do
@@ -76,7 +76,7 @@ defmodule SocialCircleWeb.UserJourneys.AccountLinkingJourneyTest do
       conn = get(conn, redirected_to(conn))
       assert redirected_to(conn) == ~p"/settings/accounts"
 
-      # Step 3: Link Google 
+      # Step 3: Link Google
       conn = get(conn, ~p"/auth/google/link")
       conn = get(conn, redirected_to(conn))
       assert redirected_to(conn) == ~p"/settings/accounts"

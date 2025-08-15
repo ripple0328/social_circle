@@ -10,7 +10,7 @@ defmodule SocialCircle.Accounts.LinkedProviderTest do
 
   use SocialCircle.DataCase
 
-  alias SocialCircle.Accounts.{User, LinkedProvider}
+  alias SocialCircle.Accounts.{LinkedProvider, User}
 
   describe "create action" do
     setup do
@@ -291,7 +291,7 @@ defmodule SocialCircle.Accounts.LinkedProviderTest do
         LinkedProvider
         |> Ash.read!(actor: test_actor())
 
-      assert length(linked_providers) == 0
+      assert Enum.empty?(linked_providers)
     end
   end
 end

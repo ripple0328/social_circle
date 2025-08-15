@@ -12,7 +12,7 @@ defmodule SocialCircleWeb.AuthControllerTest do
 
   use SocialCircleWeb.ConnCase
 
-  alias SocialCircle.Accounts.{User, LinkedProvider}
+  alias SocialCircle.Accounts.{LinkedProvider, User}
 
   describe "OAuth provider redirect" do
     test "GET /auth/:provider redirects to OAuth callback for valid providers", %{conn: conn} do
@@ -209,7 +209,7 @@ defmodule SocialCircleWeb.AuthControllerTest do
         conn = build_conn() |> get(~p"/auth/#{provider}/callback?code=test")
         assert redirected_to(conn) == ~p"/dashboard"
 
-        # Test link redirect (requires auth)  
+        # Test link redirect (requires auth)
         {:ok, user} =
           create_test_user(
             :x,

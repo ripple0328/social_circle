@@ -249,9 +249,7 @@ defmodule SocialCircleWeb.AuthController do
   defp get_error_message(_), do: "An error occurred during authentication"
 
   defp get_readable_error_message(%Ash.Error.Invalid{errors: errors}) do
-    errors
-    |> Enum.map(&format_error/1)
-    |> Enum.join(", ")
+    Enum.map_join(errors, ", ", &format_error/1)
   end
 
   defp format_error(%{message: message}), do: message
