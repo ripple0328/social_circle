@@ -5,7 +5,7 @@ This document contains detailed instructions for setting up and developing Socia
 ## Prerequisites
 
 - Docker and Docker Compose
-- [mise](https://mise.jdx.dev/) (for managing Elixir/Erlang versions)
+- [mise](https://mise.jdx.dev/) (for managing Elixir/Erlang versions and direnv)
 - inotify-tools (for file watching)
 
 ## Installation
@@ -35,6 +35,39 @@ brew install mise docker docker-compose fswatch
 mise install elixir@1.18 erlang@28
 mise use elixir@1.18 erlang@28
 ```
+
+## Environment Setup
+
+This project uses `direnv` for managing environment variables in development. `mise` will automatically install `direnv` when you run `mise install`.
+
+### 1. Setup OAuth Credentials
+
+1. **X (Twitter) Developer Account**: 
+   - Go to https://developer.x.com/
+   - Create an app with callback URL: `http://localhost:4000/auth/x/callback`
+   - Get your Consumer Key and Consumer Secret
+
+2. **Copy environment template**:
+   ```bash
+   cp .envrc.example .envrc
+   ```
+
+3. **Edit .envrc with your actual credentials**:
+   ```bash
+   # Edit the file and replace placeholder values with your actual OAuth credentials
+   vim .envrc  # or use your preferred editor
+   ```
+
+4. **Allow direnv to load the variables**:
+   ```bash
+   direnv allow
+   ```
+
+### 2. Additional OAuth Providers (Optional)
+
+- **Google**: https://console.developers.google.com/ (set callback: `http://localhost:4000/auth/google/callback`)
+- **Facebook**: https://developers.facebook.com/ (set callback: `http://localhost:4000/auth/facebook/callback`)  
+- **Apple**: https://developer.apple.com/ (set callback: `http://localhost:4000/auth/apple/callback`)
 
 ## Database Setup
 
@@ -298,9 +331,56 @@ PORT=4001 mix phx.server
 # Check tool versions
 mise current
 
-# Install missing tools
+# Install missing tools (including direnv)
 mise install
 
 # Update tools
 mise upgrade
 ```
+
+## Environment Variables Reference
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `X_CONSUMER_KEY` | ✅ | X (Twitter) API Consumer Key |
+| `X_CONSUMER_SECRET` | ✅ | X (Twitter) API Consumer Secret |
+| `GOOGLE_CLIENT_ID` | ⚠️  | Google OAuth Client ID |
+| `GOOGLE_CLIENT_SECRET` | ⚠️  | Google OAuth Client Secret |
+| `FACEBOOK_APP_ID` | ⚠️  | Facebook App ID |
+| `FACEBOOK_APP_SECRET` | ⚠️  | Facebook App Secret |
+| `APPLE_CLIENT_ID` | ⚠️  | Apple Services ID |
+| `APPLE_TEAM_ID` | ⚠️  | Apple Developer Team ID |
+| `APPLE_KEY_ID` | ⚠️  | Apple Sign In Key ID |
+| `APPLE_PRIVATE_KEY_PATH` | ⚠️  | Path to Apple private key file |
+
+✅ = Required for basic functionality  
+⚠️ = Optional, for additional OAuth providers
+
+## Production Deployment
+
+Set environment variables via your hosting platform:
+
+### Fly.io
+```bash
+fly secrets set X_CONSUMER_KEY="your_key"
+fly secrets set X_CONSUMER_SECRET="your_secret"
+```
+
+### Heroku
+```bash
+heroku config:set X_CONSUMER_KEY="your_key"
+heroku config:set X_CONSUMER_SECRET="your_secret"
+```
+
+### Docker
+```bash
+docker run -e X_CONSUMER_KEY="your_key" -e X_CONSUMER_SECRET="your_secret" your-app
+```
+
+## Security Notes
+
+- Never commit `.envrc` to version control (already in .gitignore)
+- Use different credentials for development and production
+- Rotate credentials regularly
+- Use least-privilege OAuth scopes
+- For production, consider using dedicated secret management services like AWS Secrets Manager or HashiCorp Vault

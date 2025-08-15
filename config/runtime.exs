@@ -117,3 +117,11 @@ if config_env() == :prod do
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 end
+
+# OAuth Configuration handled by AshAuthentication
+# Environment variables are read directly by AshAuthentication strategies:
+# - X_CLIENT_ID, X_CLIENT_SECRET
+# - GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET  
+# - FACEBOOK_APP_ID, FACEBOOK_APP_SECRET
+# - APPLE_CLIENT_ID, APPLE_CLIENT_SECRET
+# - BASE_URL (for OAuth redirect URIs)

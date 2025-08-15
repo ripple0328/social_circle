@@ -8,10 +8,11 @@ defmodule SocialCircle.Accounts do
 
   use Ash.Domain
 
-  alias SocialCircle.Accounts.{User, LinkedProvider}
+  alias SocialCircle.Accounts.{User, LinkedProvider, Token}
 
   resources do
     resource User
     resource LinkedProvider
+    resource Token
   end
 end

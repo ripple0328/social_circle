@@ -28,11 +28,13 @@ defmodule SocialCircleWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import SocialCircleWeb.ConnCase
+      import SocialCircle.DataCase, only: [test_actor: 0]
     end
   end
 
   setup tags do
     SocialCircle.DataCase.setup_sandbox(tags)
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+    conn = Phoenix.ConnTest.build_conn() |> Phoenix.ConnTest.init_test_session(%{})
+    {:ok, conn: conn}
   end
 end

@@ -5,7 +5,7 @@ defmodule SocialCircle.MixProject do
     [
       app: :social_circle,
       version: "0.1.0",
-      elixir: "~> 1.15",
+      elixir: "~> 1.18",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -92,13 +92,9 @@ defmodule SocialCircle.MixProject do
       {:ash, "~> 3.5"},
       {:ash_postgres, "~> 2.6"},
       {:ash_phoenix, "~> 2.3"},
+      {:ash_authentication, "~> 4.3"},
+      {:ash_authentication_phoenix, "~> 2.3"},
       {:picosat_elixir, "~> 0.2"},
-      # OAuth dependencies (latest compatible versions)
-      {:ueberauth, "~> 0.10"},
-      {:ueberauth_google, "~> 0.12"},
-      {:ueberauth_facebook, "~> 0.10"},
-      {:ueberauth_twitter, "~> 0.4"},
-      {:ueberauth_apple, "~> 0.6"},
       # for debugging
       {:tidewave, "~> 0.3", only: [:dev]}
     ]

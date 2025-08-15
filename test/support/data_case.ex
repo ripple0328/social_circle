@@ -55,4 +55,11 @@ defmodule SocialCircle.DataCase do
       end)
     end)
   end
+
+  @doc """
+  Create a test actor for bypassing authorization policies in test environment
+  """
+  def test_actor do
+    %{test_env: true}
+  end
 end

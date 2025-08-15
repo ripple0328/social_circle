@@ -1,0 +1,27 @@
+# Social Circle Environment Variables Template
+# Copy this to .envrc and fill in your actual credentials
+
+# X (Twitter) OAuth Credentials
+# Get these from https://developer.x.com/
+export X_CONSUMER_KEY="your_x_consumer_key_here"
+export X_CONSUMER_SECRET="your_x_consumer_secret_here"
+
+# Google OAuth Credentials  
+# Get these from https://console.developers.google.com/
+export GOOGLE_CLIENT_ID="your_google_client_id"
+export GOOGLE_CLIENT_SECRET="your_google_client_secret"
+
+# Facebook OAuth Credentials
+# Get these from https://developers.facebook.com/
+export FACEBOOK_APP_ID="your_facebook_app_id"
+export FACEBOOK_APP_SECRET="your_facebook_app_secret"
+
+# Apple OAuth Credentials
+# Get these from https://developer.apple.com/
+export APPLE_CLIENT_ID="your_apple_client_id"
+export APPLE_TEAM_ID="your_apple_team_id"
+export APPLE_KEY_ID="your_apple_key_id"
+export APPLE_PRIVATE_KEY_PATH="priv/keys/apple_private_key.p8"
+
+# Development Database
+export DATABASE_URL="ecto://postgres:postgres@localhost/social_circle_dev"

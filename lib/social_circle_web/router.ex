@@ -14,10 +14,38 @@ defmodule SocialCircleWeb.Router do
     plug :accepts, ["json"]
   end
 
+
   scope "/", SocialCircleWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", HomeLive
+    live "/auth", AuthLive
+    live "/dashboard", DashboardLive
+  end
+
+  # Settings routes
+  scope "/settings", SocialCircleWeb.Settings do
+    pipe_through :browser
+
+    live "/accounts", AccountsLive
+  end
+
+  # Authentication routes
+  scope "/auth", SocialCircleWeb do
+    pipe_through :browser
+
+    # OAuth provider redirects
+    get "/:provider", AuthController, :provider
+    
+    # OAuth callbacks
+    get "/:provider/callback", AuthController, :callback
+    
+    # Account linking (for authenticated users)
+    get "/:provider/link", AuthController, :provider
+    get "/:provider/link/callback", AuthController, :link_callback
+    
+    # Session management
+    delete "/logout", AuthController, :logout
   end
 
   # Other scopes may use custom stacks.

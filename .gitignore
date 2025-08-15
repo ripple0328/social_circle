@@ -41,6 +41,7 @@ npm-debug.log
 # Development environment files
 .env
 .env.local
+.envrc
 
 # IDE and editor files
 .vscode/

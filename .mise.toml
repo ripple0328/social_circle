@@ -5,6 +5,7 @@
 # Core Elixir/Erlang versions
 erlang = "28.0.2"
 elixir = "1.18.4-otp-28"
+direnv = "2.37.1"
 
 
 # Development tools
