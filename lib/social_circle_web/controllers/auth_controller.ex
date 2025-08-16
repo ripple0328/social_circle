@@ -129,32 +129,33 @@ defmodule SocialCircleWeb.AuthController do
     actor = %{test_env: true, id: user_id}
 
     # Handle invalid UUID gracefully
-    with {:ok, user} <- get_user_safely(user_id, actor) do
-      case user
-           |> Ash.Changeset.for_update(:link_provider, %{
-             provider: String.to_atom(provider),
-             provider_id: oauth_info[:provider_id],
-             avatar_url: oauth_info[:avatar_url]
-           })
-           |> Ash.update(actor: actor) do
-        {:ok, _user} ->
-          conn
-          |> put_flash(:info, "Successfully linked #{String.capitalize(provider)} account")
-          |> redirect(to: ~p"/settings/accounts")
+    case get_user_safely(user_id, actor) do
+      {:ok, user} ->
+        case user
+             |> Ash.Changeset.for_update(:link_provider, %{
+               provider: String.to_atom(provider),
+               provider_id: oauth_info[:provider_id],
+               avatar_url: oauth_info[:avatar_url]
+             })
+             |> Ash.update(actor: actor) do
+          {:ok, _user} ->
+            conn
+            |> put_flash(:info, "Successfully linked #{String.capitalize(provider)} account")
+            |> redirect(to: ~p"/settings/accounts")
 
-        {:error, %Ash.Error.Invalid{} = error} ->
-          error_message = get_readable_error_message(error)
+          {:error, %Ash.Error.Invalid{} = error} ->
+            error_message = get_readable_error_message(error)
 
-          conn
-          |> put_flash(:error, error_message)
-          |> redirect(to: ~p"/settings/accounts")
+            conn
+            |> put_flash(:error, error_message)
+            |> redirect(to: ~p"/settings/accounts")
 
-        {:error, _error} ->
-          conn
-          |> put_flash(:error, "Failed to link account. Please try again.")
-          |> redirect(to: ~p"/settings/accounts")
-      end
-    else
+          {:error, _error} ->
+            conn
+            |> put_flash(:error, "Failed to link account. Please try again.")
+            |> redirect(to: ~p"/settings/accounts")
+        end
+
       _ ->
         conn
         |> put_flash(:error, "You must be logged in to link accounts")
@@ -163,12 +164,10 @@ defmodule SocialCircleWeb.AuthController do
   end
 
   defp get_user_safely(user_id, actor) do
-    try do
-      user = User |> Ash.get!(user_id, actor: actor)
-      {:ok, user}
-    rescue
-      _ -> {:error, :invalid_user}
-    end
+    user = User |> Ash.get!(user_id, actor: actor)
+    {:ok, user}
+  rescue
+    _ -> {:error, :invalid_user}
   end
 
   defp handle_link_error(conn, error) do
